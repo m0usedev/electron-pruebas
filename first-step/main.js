@@ -1,4 +1,6 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
+const path = require('node:path')
+var mysql = require('mysql')
 
 /**
  * - app: controla el ciclo de vida del evento de la aplicación.
@@ -7,14 +9,21 @@ const { app, BrowserWindow } = require('electron')
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600
+    width: 1920,
+    height: 1080,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    },
   }) //creamos una nueva ventana
-
   win.loadFile('index.html') //esta ventana carga este archivo html
+  //win.loadURL('http://localhost:5173/')
 }
 
+
+
 app.whenReady().then(() => {
+  ipcMain.handle('ping', () => 'pong')
+
   createWindow()
 
   app.on('activate', () => {
